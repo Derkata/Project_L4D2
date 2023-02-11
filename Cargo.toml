@@ -1,0 +1,15 @@
+[package]
+name = "l4d2"
+version = "0.0.1"
+authors = ["Iskender Chobanov"]
+edition = "2021"
+
+[dependencies]
+ggez = "0.8.1"
+nalgebra = "0.31.4"
+rand = "0.8.4"
+libm = "0.2.6"
+
+[dev-dependencies]
+quickcheck = "1.0.3"
+quickcheck_macros = "1.0.0"
