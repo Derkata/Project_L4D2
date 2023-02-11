@@ -46,7 +46,7 @@ impl Ai
                     {
                         yy = rand::thread_rng().gen_range(player.pos.y-1800.0*0.6..player.pos.y-400.0);
                     }
-                    
+                    //test successful commit
                     let dps = rand::thread_rng().gen_range(0.2..0.5);
                     let enemy = Enemy::new(ctx,Point2{x:xx,y:yy},100.0,dps); 
                     //println!("Spawn with dps {}",dps);
