@@ -62,7 +62,7 @@ impl Player {
         //self.angle *= 10.0;
     }
 
-    pub fn draw(&self,ctx: &Context , canvas: &mut graphics::Canvas, assets: &Assets) {
+    pub fn draw(&self,_ctx: &Context , canvas: &mut graphics::Canvas, assets: &Assets) {
         match self.state {
             PlayerState::Normal => {
                 let draw_params = graphics::DrawParam::default().

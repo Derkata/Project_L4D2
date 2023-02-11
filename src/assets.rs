@@ -66,6 +66,17 @@ impl Assets {
         })
     }
 }
+pub trait MockSimple //Mock init for Crosshair ,Player,Shot,Structure
+{
+    fn new_mock(pos: Point2<f32>)->Self;
+    fn update_mock(&mut self,pos: Point2<f32>,seconds: f32,amount_x:f32,amount_y:f32,mouse: Point2<f32>);
+}
+
+pub trait MockHud
+{
+    fn new_mock(health: u8,ammo: u32,weapon: WeaponType)->Self;
+
+}
 
 
 #[derive(Debug)]
@@ -113,12 +124,18 @@ impl Hud
         let h = health as f32;
         Hud{health: h,ammo,weapon}
     }
-    pub fn update(&mut self,amount: u8,add : bool)
+    pub fn update_health(&mut self,amount: u8,add : bool)
     {
         if add
         {self.health+=amount as f32; return ();}
         self.health-=amount as f32
         
+    }
+    pub fn update_ammo(&mut self,amount: u8,add : bool)
+    {
+        if add
+        {self.health+=amount as f32; return ();}
+        self.health-=amount as f32
     }
     pub fn draw(&mut self,canvas: &mut graphics::Canvas,ctx: &Context,assets: &Assets,ammo1: u32)
     {

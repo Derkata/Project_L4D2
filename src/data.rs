@@ -9,7 +9,6 @@ use ggez::mint::{Vector2, Point2};
 use crate::assets::{Assets};
 #[derive(Debug)]
 pub struct Structure {
-    ai_placable: bool,
     mesh: Mesh,
     pub rec: Rect,
     pos: Point2<f32>,
@@ -23,20 +22,20 @@ impl Structure {
         rect.w = rect.w+scale;
         rect.h = rect.h+scale;
         let mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),*rect,graphics::Color::YELLOW).unwrap();
-        Structure{ai_placable: false,mesh,rec:*rect,pos:rect.point(),color:graphics::Color::YELLOW}
+        Structure{mesh,rec:*rect,pos:rect.point(),color:graphics::Color::YELLOW}
     }
     pub fn new_color_size(ctx: &Context,pos: Point2<f32>,color:graphics::Color,h:f32,w:f32) -> Self
     {
         let rec = graphics::Rect::new(pos.x,pos.y,w,h);
         let mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),rec,color).unwrap();
-        Structure{ai_placable: false,mesh,rec,pos,color}
+        Structure{mesh,rec,pos,color}
        
     }
-    pub fn new(ctx: &Context,pos: Point2<f32>,ai_placable: bool) -> Self
+    pub fn new(ctx: &Context,pos: Point2<f32>) -> Self
     {
         let rec = graphics::Rect::new(pos.x,pos.y,200.0,250.0);
         let mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),rec,graphics::Color::RED).unwrap();
-        Structure{ai_placable,mesh,rec,pos,color:graphics::Color::RED}
+        Structure{mesh,rec,pos,color:graphics::Color::RED}
     }
     pub fn update(&mut self,pos: Point2<f32>,ctx: &Context,seconds: f32,amount_x:f32,amount_y:f32) { 
             self.rec.x += Self::SPEED * seconds * amount_x;

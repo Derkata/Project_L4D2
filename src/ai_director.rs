@@ -161,7 +161,7 @@ impl Ai
         {
             let xx = rand::thread_rng().gen_range(bound.rec.x+200.0..(bound.rec.x+bound.rec.w-200.0));//(bound.rec.x..(bound.rec.x+bound.rec.w));
             let yy = rand::thread_rng().gen_range(bound.rec.y+200.0..(bound.rec.y+bound.rec.h-200.0));//(bound.rec.y..(bound.rec.x+bound.rec.y));
-            let obj = Structure::new(ctx,Point2{x:xx,y:yy},true);
+            let obj = Structure::new(ctx,Point2{x:xx,y:yy});
            
             if i>0
             {
