@@ -1,5 +1,6 @@
+#[allow(deprecated)]
 use ggez::audio::{self, SoundSource};
-use ggez::graphics::{self, Drawable};
+use ggez::graphics::{self};
 use crate::entities::{Player,PlayerState};
 use ggez::{Context, GameResult};
 use std::fmt::Debug;

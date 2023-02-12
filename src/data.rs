@@ -40,6 +40,8 @@ impl Structure {
     pub fn update(&mut self,pos: Point2<f32>,ctx: &Context,seconds: f32,amount_x:f32,amount_y:f32) { 
             self.rec.x += Self::SPEED * seconds * amount_x;
             self.rec.y += Self::SPEED * seconds * amount_y;
+            self.pos.x = self.rec.x;
+            self.pos.y = self.rec.y;
             //self.rec.move_to(Point2{x:self.rec.x-pos.x,y:self.rec.y-pos.y});
             self.mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.rec,self.color).unwrap();
            
@@ -106,8 +108,8 @@ impl Weapon {
         let ms = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),s,graphics::Color::GREEN).unwrap();
         let max_ammo = (u32::MAX,100,12);
         match &w_type {
-            WeaponType::SPistol => Weapon {w_type,damage: 11.0,recoil: Point2{x:-10.0,y:10.0},fire_rate:10.0,pos,pick_box:mp,rect:p,ammo:u32::MAX,
-            default_recoil: Point2{x:-30.0,y:30.0},max_ammo},
+            WeaponType::SPistol => Weapon {w_type,damage: 11.0,recoil: Point2{x:-0.1,y:0.1},fire_rate:10.0,pos,pick_box:mp,rect:p,ammo:u32::MAX,
+            default_recoil: Point2{x:-7.0,y:7.0},max_ammo},
             WeaponType::Rifle => Weapon {w_type,damage: 25.0,recoil: Point2{x:-5.0,y:5.0},fire_rate:20.0,pos,pick_box:mr,rect:r,ammo:100,
             default_recoil: Point2{x:-5.0,y:5.0},max_ammo},
             WeaponType::Shotgun => Weapon {w_type,damage: 25.0, recoil: Point2{x:-1.0,y:1.0},fire_rate:2.0,pos,pick_box:ms,rect:s,ammo:12,
@@ -159,9 +161,9 @@ impl Weapon {
         self.recoil.y+=1.0;
 
     }
-    pub fn cooldown(&mut self,time: u16)
+    pub fn cooldown(&mut self)
     {
-       if self.recoil.x < self.default_recoil.x {self.recoil.x +=1.0;self.recoil.y -=1.0;}
+       if self.recoil.x < self.default_recoil.x {println!("recoil {:?}",self.recoil);self.recoil.x +=0.5;self.recoil.y -=0.5;}
     }
 
 }
@@ -182,7 +184,7 @@ impl PickUp
         let mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),pick,graphics::Color::GREEN).unwrap();
         PickUp{amount,is_health,pick,mesh}
     }
-    pub fn update(&mut self,pos: Point2<f32>,ctx: &Context,seconds: f32,amount_x:f32,amount_y:f32)
+    pub fn update(&mut self,ctx: &Context,seconds: f32,amount_x:f32,amount_y:f32)
     {
             self.pick.x +=  500.0 * seconds * amount_x;
             self.pick.y +=  500.0 * seconds * amount_y;
@@ -192,7 +194,7 @@ impl PickUp
     pub fn draw(&self, canvas: &mut graphics::Canvas,assets: &Assets)
     {
         let draw_params = graphics::DrawParam::default().dest(Point2{x:self.pick.x-20.0,y:self.pick.y-25.0}).scale(Vector2 {x:self.amount*0.01,y:self.amount*0.01});
-        let draw2 = graphics::DrawParam::default();
+        //let draw2 = graphics::DrawParam::default();
         if self.is_health
         {
           //  canvas.draw(&self.mesh,draw2);
