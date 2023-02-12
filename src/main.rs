@@ -502,7 +502,7 @@ impl event::EventHandler for MainState {
                 {e.update(self.player.pos,ctx,seconds,self.input.movement_x,self.input.movement_y,rand_mov);}
             }
          
-            
+            self.bound.update(self.player.dis_mov,ctx,seconds,self.input.movement_x,self.input.movement_y);
 
             self.shots.retain(|shot| shot.is_alive);
             self.weapons.retain(|w| w.ammo > 0);
@@ -525,7 +525,7 @@ impl event::EventHandler for MainState {
             let _ = dead.iter().map(|e| self.drop_item(ctx,e,drop,amount)).collect::<()>();
             
             self.picks.retain(|p| p.amount > 0.0);
-            self.bound.update(self.player.dis_mov,ctx,seconds,self.input.movement_x,self.input.movement_y);
+            
             if self.player.square.overlaps(&self.end.rec)
             {
                 self.game_over = GameOver::Win;

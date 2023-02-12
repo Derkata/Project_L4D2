@@ -49,18 +49,18 @@ impl Structure {
     pub fn draw(&mut self,ctx: &Context, canvas: &mut graphics::Canvas) {
             let dp = graphics::DrawParam::default();//.rotation(1.0);
             canvas.draw(&self.mesh,dp);
-          //  let mut mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.left_side(),graphics::Color::GREEN).unwrap();
-         //   canvas.draw(&mesh,dp);
+            let mut mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.left_side(),graphics::Color::GREEN).unwrap();
+         //  canvas.draw(&mesh,dp);
          //   mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.right_side(),graphics::Color::GREEN).unwrap();
          //   canvas.draw(&mesh,dp);
-         //   mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.top_side(),graphics::Color::GREEN).unwrap();
-         //    canvas.draw(&mesh,dp);
+         //  mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.top_side(),graphics::Color::GREEN).unwrap();
+          //   canvas.draw(&mesh,dp);
          //   mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.bottom_side(),graphics::Color::GREEN).unwrap();
-         //  canvas.draw(&mesh,dp);
+          // canvas.draw(&mesh,dp);
         }
     pub fn left_side(&self)->Rect
     {
-        graphics::Rect::new(self.rec.point().x,self.rec.point().y,10.0,self.rec.h)
+        graphics::Rect::new(self.rec.point().x-10.0,self.rec.point().y+10.0,10.0,self.rec.h-20.0)
     }
     pub fn top_side(&self)->Rect
     {
@@ -72,7 +72,7 @@ impl Structure {
     }
     pub fn right_side(&self)->Rect
     {
-        graphics::Rect::new(self.rec.point().x+self.rec.w,self.rec.point().y,10.0,self.rec.h)
+        graphics::Rect::new(self.rec.point().x+self.rec.w,self.rec.point().y+10.0,10.0,self.rec.h-20.0)
     }
     
 }
@@ -163,7 +163,7 @@ impl Weapon {
     }
     pub fn cooldown(&mut self)
     {
-       if self.recoil.x < self.default_recoil.x {println!("recoil {:?}",self.recoil);self.recoil.x +=0.5;self.recoil.y -=0.5;}
+       if self.recoil.x < self.default_recoil.x {self.recoil.x +=0.5;self.recoil.y -=0.5;}
     }
 
 }
