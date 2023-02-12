@@ -252,7 +252,7 @@ impl Enemy {
                 self.hit_box.x += Self::SPEED*seconds*amount_x  + Self::SPEED*seconds;
             }
             else  {self.z=2;self.hit_box.x +=  Self::SPEED*seconds*amount_x - Self::SPEED*seconds;}
-          //  self.hit_box.y+=Self::SPEED * seconds * amount_y ;
+          //self.hit_box.y+=Self::SPEED * seconds * amount_y ;
            
         }
         else 
