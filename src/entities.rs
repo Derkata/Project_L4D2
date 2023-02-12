@@ -249,10 +249,10 @@ impl Enemy {
             if Self::euclid_dist(pos,Point2{x:rect.rec.x,y:rect.rec.y})> Self::euclid_dist(pos,Point2{x:rect.rec.x+rect.rec.w,y:rect.rec.y})
             {
                 self.z=1;
-                self.hit_box.x += Self::SPEED*seconds*amount_x + Self::SPEED * seconds ;
+                self.hit_box.x += Self::SPEED*seconds*amount_x  + Self::SPEED*seconds;
             }
-            else  {self.z=2;self.hit_box.x +=  Self::SPEED*seconds*amount_x - Self::SPEED * seconds ;}
-          //  self.hit_box.y+=Self::SPEED * seconds * amount_y ;
+            else  {self.z=2;self.hit_box.x +=  Self::SPEED*seconds*amount_x - Self::SPEED*seconds;}
+          //self.hit_box.y+=Self::SPEED * seconds * amount_y ;
            
         }
         else 
