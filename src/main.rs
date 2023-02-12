@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 use ggez::audio::SoundSource;
 use ggez::conf::{Conf, WindowMode};
 use ggez::event;
@@ -8,14 +9,12 @@ use ggez::{Context, ContextBuilder, GameResult};
 use rand::Rng;
 use rand::rngs::ThreadRng;
 use ggez::input::mouse::MouseButton;
-use ggez::conf::FullscreenType;
 use libm::sin;
 use libm::cos;
 
 use l4d2::entities::{Player, PlayerState, Shot, Enemy};
 use l4d2::assets::{Assets, Crosshair,Hud};
 use l4d2::data::{Structure,Weapon,WeaponType,PickUp};
-use l4d2::debug;
 use l4d2::ai_director::Ai;
 use std::env;
 use std::path;
@@ -88,21 +87,6 @@ impl MainState {
             else {return;}
         }
 
-    fn spawn_struct(&mut self,ctx: &Context,wp: Point2<f32>)
-    {
-        let s = Structure::new(ctx,wp,true);
-        self.structs.push(s);
-    }
-    fn spawn_enemy(&mut self,ctx: &Context,ep: Point2<f32>,health:f32,dps:f32)
-    {
-        let e = Enemy::new(ctx,ep,health,dps);
-        self.enemies.push(e);
-    }
-    fn spawn_weapon(&mut self,ctx: &Context,w_type: WeaponType,pos: Point2<f32>)
-    {
-        let w = Weapon::new(w_type,pos,ctx);
-        self.weapons.push(w);
-    }
     fn spawn_health(&mut self,ctx: &Context,pos:Point2<f32>,amount: f32)
     {
         let h = PickUp::new(ctx,pos,amount,true);
@@ -113,7 +97,11 @@ impl MainState {
         let a = PickUp::new(ctx,pos,amount,false);
         self.picks.push(a);
     }
-
+    fn spawn_weapon(&mut self,ctx: &Context,w_type: WeaponType,pos: Point2<f32>)
+    {
+        let w = Weapon::new(w_type,pos,ctx);
+        self.weapons.push(w);
+    }
     fn pick_drop_item(&mut self, ctx: &mut Context) {
         for pick in self.picks.iter_mut()
         {
@@ -133,10 +121,10 @@ impl MainState {
                     self.hud.health += pick.amount;
                 }
                 else {      
-                    let mut max = self.player.weapon.max_ammo.0;
+                    let mut max = 0;
                     match self.player.weapon.w_type
                     {
-                        WeaponType::SPistol => break,
+                        WeaponType::SPistol => {max = self.player.weapon.max_ammo.0;break},
                         WeaponType::Rifle => max = self.player.weapon.max_ammo.1,
                         WeaponType::Shotgun => max = self.player.weapon.max_ammo.2,
 
@@ -204,7 +192,7 @@ impl MainState {
         {
            if self.player.weapon.ammo == 0
            {
-               let mut default = Weapon::new(WeaponType::SPistol,Point2{x:0.0,y:0.0},ctx);
+               let default = Weapon::new(WeaponType::SPistol,Point2{x:0.0,y:0.0},ctx);
                self.player.weapon = default;
                self.hud.weapon = WeaponType::SPistol;
            }
@@ -213,7 +201,7 @@ impl MainState {
         {
            if self.player.weapon.ammo == 0
            {
-               let mut default = Weapon::new(WeaponType::SPistol,Point2{x:0.0,y:0.0},ctx);
+               let default = Weapon::new(WeaponType::SPistol,Point2{x:0.0,y:0.0},ctx);
                self.player.weapon = default;
                self.hud.weapon = WeaponType::SPistol;
            }
@@ -222,7 +210,7 @@ impl MainState {
     }
        
 
-    fn all_collisions(&mut self, ctx: &mut Context)
+    fn all_collisions(&mut self)
     {
         let mut slowed = false;
         for e in self.enemies.iter_mut()
@@ -252,10 +240,9 @@ impl MainState {
         {
             self.slow = 0.0;
         }
-        let mut i = 0;
       
         for s in self.structs.iter_mut(){
-            i+=1;//1->block A y=0.0 , x=0.0
+            //1->block A y=0.0 , x=0.0
            // println!("{:?} ,{}",s.rec.point(),i);
             //println!("{:?}",self.player.square.point());
             if s.right_side().overlaps(&self.player.square) //|| self.bound.left_side().overlaps(&self.player.square)
@@ -352,7 +339,7 @@ impl MainState {
             y: screen_height /1.7, //+ 50.0,
         };
        
-        let mut p = Vec::new();
+        let p = Vec::new();
         //let health1 = PickUp::new(ctx,Point2{x:-200.0,y:50.0},100.0,true);
       //  let ammo1 = PickUp::new(ctx,Point2{x:200.0,y:50.0},100.0,false);
         //p.push(health1);
@@ -455,13 +442,7 @@ impl event::EventHandler for MainState {
                     y: self.rng.gen_range(self.player.weapon.recoil.x .. self.player.weapon.recoil.y),
                 };
                 let shot = Shot::new(shot_pos,Point2{x:ctx.mouse.position().x+recoil.x,y:ctx.mouse.position().y+recoil.y});
-                self.time+=1;
-                if self.time>10
-                {
-                  self.time = 10;
-                }
                 self.player.weapon.shoot();
-                self.player.weapon.cooldown(self.time);
                 let shot1 = Shot::new(shot_pos,Point2{x:ctx.mouse.position().x-10.0+recoil.x,
                     y:ctx.mouse.position().y+10.0+recoil.y});
                 let shot2 = Shot::new(shot_pos,Point2{x:ctx.mouse.position().x-5.0+recoil.x,
@@ -482,14 +463,10 @@ impl event::EventHandler for MainState {
                 self.player.state = PlayerState::Shooting;
             } else if !self.input.fire {
                 self.player.state = PlayerState::Normal;
-                if self.time < 1
-                {
-                  self.time = 1;
-                }
-                self.time-=1;
+                self.player.weapon.cooldown();
             }
             for picks in self.picks.iter_mut() {
-                picks.update(self.player.dis_mov,ctx,seconds,self.input.movement_x,self.input.movement_y);
+                picks.update(ctx,seconds,self.input.movement_x,self.input.movement_y);
             }
             self.crosshair.update(ctx);
             for shot in self.shots.iter_mut() {
@@ -532,7 +509,7 @@ impl event::EventHandler for MainState {
             let mut dead: Vec<Enemy> = Vec::new();
             self.end.update(self.player.dis_mov,ctx,seconds,self.input.movement_x,self.input.movement_y);
             self.pick_drop_item(ctx);
-            self.all_collisions(ctx);
+            self.all_collisions();
             self.delete_shot();
                 for e in self.enemies.iter()
                 {
@@ -545,7 +522,7 @@ impl event::EventHandler for MainState {
             let (mut vec,drop,amount) = self.ai.calculate(ctx,self.enemies.len(),&self.bound,&self.player,&self.structs,
                     &self.hud,&self.end);
             self.enemies.append(&mut vec);
-            dead.iter().map(|e| self.drop_item(ctx,e,drop,amount)).collect::<()>();
+            let _ = dead.iter().map(|e| self.drop_item(ctx,e,drop,amount)).collect::<()>();
             
             self.picks.retain(|p| p.amount > 0.0);
             self.bound.update(self.player.dis_mov,ctx,seconds,self.input.movement_x,self.input.movement_y);
@@ -566,7 +543,7 @@ impl event::EventHandler for MainState {
     }
 
     fn key_down_event(&mut self, ctx: &mut Context, input: keyboard::KeyInput, _repeat: bool) -> GameResult<()> {
-        let k_ctx = &ctx.keyboard;
+        //let k_ctx = &ctx.keyboard;
         match input.keycode {
             Some(keyboard::KeyCode::A) => { if self.button != 1 {
                 self.input.movement_x = 1.0 - self.slow;}
@@ -705,7 +682,7 @@ pub fn main() {
         path.push("resources");
         ctx.fs.mount(&path, true);
     }
-    graphics::set_window_title(&mut ctx, "L4D2");
+    ctx.gfx.set_window_title("L4D2");
     let state = MainState::new(&mut ctx, &conf).unwrap();
 
     event::run(ctx, event_loop, state);

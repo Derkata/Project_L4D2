@@ -9,7 +9,6 @@ use ggez::mint::{Vector2, Point2};
 use crate::assets::{Assets};
 #[derive(Debug)]
 pub struct Structure {
-    ai_placable: bool,
     mesh: Mesh,
     pub rec: Rect,
     pos: Point2<f32>,
@@ -23,24 +22,26 @@ impl Structure {
         rect.w = rect.w+scale;
         rect.h = rect.h+scale;
         let mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),*rect,graphics::Color::YELLOW).unwrap();
-        Structure{ai_placable: false,mesh,rec:*rect,pos:rect.point(),color:graphics::Color::YELLOW}
+        Structure{mesh,rec:*rect,pos:rect.point(),color:graphics::Color::YELLOW}
     }
     pub fn new_color_size(ctx: &Context,pos: Point2<f32>,color:graphics::Color,h:f32,w:f32) -> Self
     {
         let rec = graphics::Rect::new(pos.x,pos.y,w,h);
         let mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),rec,color).unwrap();
-        Structure{ai_placable: false,mesh,rec,pos,color}
+        Structure{mesh,rec,pos,color}
        
     }
-    pub fn new(ctx: &Context,pos: Point2<f32>,ai_placable: bool) -> Self
+    pub fn new(ctx: &Context,pos: Point2<f32>) -> Self
     {
         let rec = graphics::Rect::new(pos.x,pos.y,200.0,250.0);
         let mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),rec,graphics::Color::RED).unwrap();
-        Structure{ai_placable,mesh,rec,pos,color:graphics::Color::RED}
+        Structure{mesh,rec,pos,color:graphics::Color::RED}
     }
     pub fn update(&mut self,pos: Point2<f32>,ctx: &Context,seconds: f32,amount_x:f32,amount_y:f32) { 
             self.rec.x += Self::SPEED * seconds * amount_x;
             self.rec.y += Self::SPEED * seconds * amount_y;
+            self.pos.x = self.rec.x;
+            self.pos.y = self.rec.y;
             //self.rec.move_to(Point2{x:self.rec.x-pos.x,y:self.rec.y-pos.y});
             self.mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.rec,self.color).unwrap();
            
@@ -107,8 +108,8 @@ impl Weapon {
         let ms = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),s,graphics::Color::GREEN).unwrap();
         let max_ammo = (u32::MAX,100,12);
         match &w_type {
-            WeaponType::SPistol => Weapon {w_type,damage: 11.0,recoil: Point2{x:-10.0,y:10.0},fire_rate:10.0,pos,pick_box:mp,rect:p,ammo:u32::MAX,
-            default_recoil: Point2{x:-30.0,y:30.0},max_ammo},
+            WeaponType::SPistol => Weapon {w_type,damage: 11.0,recoil: Point2{x:-0.1,y:0.1},fire_rate:10.0,pos,pick_box:mp,rect:p,ammo:u32::MAX,
+            default_recoil: Point2{x:-7.0,y:7.0},max_ammo},
             WeaponType::Rifle => Weapon {w_type,damage: 25.0,recoil: Point2{x:-5.0,y:5.0},fire_rate:20.0,pos,pick_box:mr,rect:r,ammo:100,
             default_recoil: Point2{x:-5.0,y:5.0},max_ammo},
             WeaponType::Shotgun => Weapon {w_type,damage: 25.0, recoil: Point2{x:-1.0,y:1.0},fire_rate:2.0,pos,pick_box:ms,rect:s,ammo:12,
@@ -160,9 +161,9 @@ impl Weapon {
         self.recoil.y+=1.0;
 
     }
-    pub fn cooldown(&mut self,time: u16)
+    pub fn cooldown(&mut self)
     {
-       if self.recoil.x < self.default_recoil.x {self.recoil.x +=1.0;self.recoil.y -=1.0;}
+       if self.recoil.x < self.default_recoil.x {println!("recoil {:?}",self.recoil);self.recoil.x +=0.5;self.recoil.y -=0.5;}
     }
 
 }
@@ -183,7 +184,7 @@ impl PickUp
         let mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),pick,graphics::Color::GREEN).unwrap();
         PickUp{amount,is_health,pick,mesh}
     }
-    pub fn update(&mut self,pos: Point2<f32>,ctx: &Context,seconds: f32,amount_x:f32,amount_y:f32)
+    pub fn update(&mut self,ctx: &Context,seconds: f32,amount_x:f32,amount_y:f32)
     {
             self.pick.x +=  500.0 * seconds * amount_x;
             self.pick.y +=  500.0 * seconds * amount_y;
@@ -193,7 +194,7 @@ impl PickUp
     pub fn draw(&self, canvas: &mut graphics::Canvas,assets: &Assets)
     {
         let draw_params = graphics::DrawParam::default().dest(Point2{x:self.pick.x-20.0,y:self.pick.y-25.0}).scale(Vector2 {x:self.amount*0.01,y:self.amount*0.01});
-        let draw2 = graphics::DrawParam::default();
+        //let draw2 = graphics::DrawParam::default();
         if self.is_health
         {
           //  canvas.draw(&self.mesh,draw2);

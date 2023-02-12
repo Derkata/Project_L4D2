@@ -29,7 +29,7 @@ impl Ai
     {
         //Calculate drop-chance
         //per 5 sec
-        let mut moreEnemies = Vec::new();
+        let mut more_enemies = Vec::new();
         if self.timer == 0.0 
         {
             let dist = Enemy::euclid_dist(player.pos,end.rec.center());
@@ -37,10 +37,10 @@ impl Ai
            // println!("{}",self.dist_end - dist);
             if self.dist_end - dist > 550.0 && self.dist_end - dist < 30000.0
             {
-                for i in 0..5
+                for _i in 0..5
                 {
                     
-                    let mut xx = rand::thread_rng().gen_range(player.pos.x+500.0..player.pos.x+1700.0);//(bound.rec.x..(bound.rec.x+bound.rec.w));
+                    let xx = rand::thread_rng().gen_range(player.pos.x+500.0..player.pos.x+1700.0);//(bound.rec.x..(bound.rec.x+bound.rec.w));
                     let mut yy = rand::thread_rng().gen_range(player.pos.y+500.0..player.pos.y+700.0);//(bound.rec.y..(bound.rec.x+bound.rec.y));
                     if lr == 0
                     {
@@ -50,13 +50,13 @@ impl Ai
                     let dps = rand::thread_rng().gen_range(0.2..0.5);
                     let enemy = Enemy::new(ctx,Point2{x:xx,y:yy},100.0,dps); 
                     //println!("Spawn with dps {}",dps);
-                    moreEnemies.push(enemy);
+                    more_enemies.push(enemy);
             }
         }
             self.dist_end = dist;
             if c_enemies < 5
             {
-                for i in 0..10
+                for _i in 0..10
                 {
                     
                     let mut xx = rand::thread_rng().gen_range(player.pos.x+1200.0..player.pos.x+1800.0);//(bound.rec.x..(bound.rec.x+bound.rec.w));
@@ -69,7 +69,7 @@ impl Ai
                     
                    
                     let enemy = Enemy::new(ctx,Point2{x:xx,y:yy},100.0,0.1); 
-                    moreEnemies.push(enemy);
+                    more_enemies.push(enemy);
                 }
             }
             if c_enemies < 30
@@ -83,7 +83,7 @@ impl Ai
                     yy = rand::thread_rng().gen_range(player.pos.y+1000.0..player.pos.y+1800.0);
                 }
                 let enemy = Enemy::new(ctx,Point2{x:xx,y:yy},100.0,0.1); 
-                moreEnemies.push(enemy);
+                more_enemies.push(enemy);
             }
             //println!("{}-{}",self.count_enemies,c_enemies);
             if self.count_enemies - c_enemies > 3
@@ -98,16 +98,16 @@ impl Ai
                 }
                 let h = rand::thread_rng().gen_range(120.0..700.0);
                 let enemy = Enemy::new(ctx,Point2{x:xx,y:yy},h,0.1); 
-                moreEnemies.push(enemy);
+                more_enemies.push(enemy);
                 
 
                 //println!("Spawn Health+ enemies")
             }
             for s in structs.iter()
              {
-              moreEnemies.retain(|e| !e.hit_box.overlaps(&s.rec) && !e.hit_box.overlaps(&player.square) && e.hit_box.overlaps(&bound.rec));
+              more_enemies.retain(|e| !e.hit_box.overlaps(&s.rec) && !e.hit_box.overlaps(&player.square) && e.hit_box.overlaps(&bound.rec));
              }
-            self.count_enemies = c_enemies+moreEnemies.len();
+            self.count_enemies = c_enemies+more_enemies.len();
         }
         
        
@@ -133,7 +133,7 @@ impl Ai
                 match player.weapon.w_type
                 {
                     WeaponType::SPistol => {self.drop = rand::thread_rng().gen_range(97..=100);},
-                    _=> self.drop = rand::thread_rng().gen_range(60..=100),
+                    _=> self.drop = rand::thread_rng().gen_range(20..=100),
                 }
                
             }
@@ -144,7 +144,7 @@ impl Ai
            
         }
         amount = rand::thread_rng().gen_range(40.0..=75.0);
-        (moreEnemies,self.drop,amount)
+        (more_enemies,self.drop,amount)
 
        
     }
@@ -161,7 +161,7 @@ impl Ai
         {
             let xx = rand::thread_rng().gen_range(bound.rec.x+200.0..(bound.rec.x+bound.rec.w-200.0));//(bound.rec.x..(bound.rec.x+bound.rec.w));
             let yy = rand::thread_rng().gen_range(bound.rec.y+200.0..(bound.rec.y+bound.rec.h-200.0));//(bound.rec.y..(bound.rec.x+bound.rec.y));
-            let obj = Structure::new(ctx,Point2{x:xx,y:yy},true);
+            let obj = Structure::new(ctx,Point2{x:xx,y:yy});
            
             if i>0
             {
@@ -178,7 +178,7 @@ impl Ai
     {
        
         let mut enemies: Vec<Enemy> = Vec::new();
-        for i in 0..max
+        for _i in 0..max
         {
             let xx = rand::thread_rng().gen_range(bound.rec.x..(bound.rec.x+bound.rec.w));//(bound.rec.x..(bound.rec.x+bound.rec.w));
             let yy = rand::thread_rng().gen_range(bound.rec.y..(bound.rec.y+bound.rec.h));//(bound.rec.y..(bound.rec.x+bound.rec.y));

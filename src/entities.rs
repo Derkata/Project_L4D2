@@ -1,4 +1,4 @@
-use ggez::{Context, GameResult};
+use ggez::{Context};
 use crate::data::{Weapon,WeaponType};
 use ggez::graphics;
 use ggez::mint::{Vector2, Point2};
@@ -62,7 +62,7 @@ impl Player {
         //self.angle *= 10.0;
     }
 
-    pub fn draw(&self,ctx: &Context , canvas: &mut graphics::Canvas, assets: &Assets) {
+    pub fn draw(&self,_ctx: &Context , canvas: &mut graphics::Canvas, assets: &Assets) {
         match self.state {
             PlayerState::Normal => {
                 let draw_params = graphics::DrawParam::default().
@@ -103,7 +103,6 @@ pub struct Shot {
     angle: f32,
     pub velocity: Vector2<f32>,
     pub mouse: Point2<f32>,
-    old_dist: Point2<f32>,
 }
 
 impl Shot {
@@ -115,7 +114,6 @@ impl Shot {
             angle,
             velocity: Vector2 { x: cos(angle.into()) as f32 * 1500.0, y: sin(angle.into()) as f32  *  1500.0 },  //1500
             mouse,
-            old_dist: Point2{x:1.0,y:1.0},
 
         }
     }
