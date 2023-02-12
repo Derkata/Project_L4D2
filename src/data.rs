@@ -49,7 +49,7 @@ impl Structure {
     pub fn draw(&mut self,ctx: &Context, canvas: &mut graphics::Canvas) {
             let dp = graphics::DrawParam::default();//.rotation(1.0);
             canvas.draw(&self.mesh,dp);
-            let mut mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.left_side(),graphics::Color::GREEN).unwrap();
+         // let mut mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.left_side(),graphics::Color::GREEN).unwrap();
          //  canvas.draw(&mesh,dp);
          //   mesh = graphics::Mesh::new_rectangle(ctx,DrawMode::fill(),self.right_side(),graphics::Color::GREEN).unwrap();
          //   canvas.draw(&mesh,dp);
